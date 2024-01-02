@@ -4,7 +4,7 @@ local parser = {}
 
 function parser:get_value(tokens, i)
 
-  while i < #tokens do
+  while i <= #tokens do
     local type = tokens[i].type
 
     if type == "WHITESPACE" then
@@ -13,7 +13,7 @@ function parser:get_value(tokens, i)
       return tokens[i].value, i + 1
     elseif type == "NUMBER" then
       return tokens[i].value, i + 1
-    elseif type == "L_CURl" then
+    elseif type == "L_CURL" then
       local value, index = self:get_object(tokens, i)
       return value, index
     elseif type == "L_SQUARE" then
@@ -37,7 +37,7 @@ function parser:get_array(tokens, i)
   local array = {}
   i = i + 1
 
-  while i < #tokens do
+  while i <= #tokens do
 
     local type = tokens[i].type
 
@@ -60,28 +60,42 @@ function parser:get_array(tokens, i)
 end
 
 function parser:get_object(tokens, i)
+  local object = {}
 
+  if tokens[i].type ~= "L_CURL" then
+    error("Missing starting curly brace")
+  end
+
+  while i <= #tokens do
+    local type = tokens[i].type
+
+    if type == "R_CURL" then
+      return object, i + 1
+    elseif type == "STRING" then
+      local name = tokens[i].value
+      i = i + 1
+
+      if tokens[i].type ~= "COLON" then
+        error("Missing colon in object " .. tokens[i].type)
+      end
+      i = i + 1
+
+      local value, index = self:get_value(tokens, i)
+      i = index
+      object[name] = value
+    else
+      i = i + 1
+    end
+  end
+
+  error("Malformed object")
 end
 
 function parser:parse(input)
   local tokens = tokenizer.tokenize(input)
-  -- tokenizer.print(tokens)
-
-  -- return get_object(input, 1)
-  -- print(self:get_value(tokens, 1))
-  local arr = self:get_array(tokens, 1)
-  for i, val in ipairs(arr) do
-    if type(val) == "table" then
-      for j, var in ipairs(val) do
-        print(var)
-      end
-    else
-      print(val)
-    end
-  end
-  -- return get_value(tokens, 1)
+  local json = self:get_object(tokens, 1)
+  return json
 end
-
 
 function parser.to_json(input)
 end
