@@ -52,10 +52,10 @@ end
 
 function tokenizer.print(tokens)
   for _, value in ipairs(tokens) do
-    if value.type ~= "WHITESPACE" then
-      print(value)
-    end
-    -- print(value)
+    -- if value.type ~= "WHITESPACE" then
+    --   print(value)
+    -- end
+    print(value)
   end
 end
 
