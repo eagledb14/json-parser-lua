@@ -12,7 +12,7 @@ local function printTable(t, indent)
     end
 end
 
-local json = io.open("glossary-example.txt")
+local json = io.open("menu-example.txt")
 if json == nil then
   print("n")
   os.exit()
@@ -29,6 +29,4 @@ local tokens = parser:parse(data)
 -- local tokens = parser.parse(" \"string\" ")
 -- local tokens = parser:parse("{\"jeff\": [\"hi\", \"there\", \"mister\", \"monkey\", [1,2,3]]}")
 -- local tokens = parser:parse("{\"jim\": [1,2,3]}")
--- local tokens = parser.parse("][true {} ")
--- local tokens = parser.parse("11924.2019312938")
 printTable(tokens)

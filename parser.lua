@@ -2,6 +2,13 @@ local tokenizer = require"tokenizer"
 
 local parser = {}
 
+local function remove_whitespace(tokens, i)
+  while tokens[i].type == "WHITESPACE" do
+    i = i + 1
+  end
+  return i
+end
+
 function parser:get_value(tokens, i)
 
   while i <= #tokens do
@@ -45,6 +52,7 @@ function parser:get_array(tokens, i)
       local value, index = self:get_value(tokens, i)
       table.insert(array, value)
       i = index
+      i = remove_whitespace(tokens, i)
 
       type = tokens[i].type
       if type == "R_SQUARE" then
